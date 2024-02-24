@@ -1,0 +1,23 @@
+[
+    {
+        "title":"Xstream Box",
+        "background":"images/netflix.png",
+        "img" : "images/Xstream.png",
+        "icons":["images/chrome.png","images/air.png","images/mic.png","images/cell.png"],
+        "features":["Chromecast builtin","XstreamApp Premium","Voice Search","Use Mobile as remote"],
+        "Charges":"Set Top Box Activation Charges",
+        "Cost":"Rs. 1500"
+        
+    },
+    {
+        "title":"HD High Definition",
+        "background":"images/ipl.jpg",
+        "img" : "images/airtel.png",
+        "icons":["images/hd.png","images/dolby.png","images/play.png","images/square.png"],
+        "features":["Premium Video Quality","Dolby Digital Sound","Record and Play","More Channels"],
+        "Charges":"Set Top Box Activation Charges",
+        "Cost":"Rs. 900"
+        
+    }
+
+]
