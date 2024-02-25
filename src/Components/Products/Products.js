@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -11,18 +11,23 @@ import "./Products.css";
 import productsData from "./Products.json";
 import Divider from "@mui/material/Divider";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../Redux/action";
 
 function Products() {
   const nav = useNavigate();
-
-  const handleClick = () => {
-    nav("/cart");
+  const dispatch = useDispatch();
+  
+  const handleClick = (product, index) => {
+    dispatch(addToCart(product));
+    console.log(product);
+   
+    nav("/cart", { state: { cartItems: product } });
   };
   return (
     <div className="product-container">
       {productsData.map((product, index) => (
         <Card key={index} className="products" sx={{ maxWidth: 300 }}>
-          {/* Use background image from JSON */}
           <CardMedia
             component="img"
             height="194"
@@ -30,7 +35,6 @@ function Products() {
             alt={product.title}
           />
           <div style={{ display: "flex", justifyContent: "center" }}>
-            {/* Use image from JSON */}
             <img
               src={product.img}
               alt={product.title}
@@ -84,7 +88,14 @@ function Products() {
                 {product.Cost}
               </Typography>
             </Box>
-            <Button className="select" size="medium" onClick={handleClick}>
+            <Button
+              className="select"
+              size="medium"
+              onClick={() => {
+                handleClick(product, index);
+              }}
+           
+            >
               SELECT
             </Button>
           </Box>

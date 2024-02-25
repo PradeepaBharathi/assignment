@@ -68,7 +68,7 @@ function Banner() {
           <div className="text">
             <p>
               <span className="dealShop">Shop By Deal</span> Special Deals for
-              New and Existiing customers
+              New and Existing customers
             </p>
           </div>
           <div className="arrow">
