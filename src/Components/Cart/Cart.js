@@ -4,30 +4,25 @@ import { Typography } from "@mui/material";
 import "./Cart.css";
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 import "./Cart.css";
-import { useDispatch } from "react-redux";
-import { removeFromCart, removeFromSub } from "../Redux/action";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  decrease,
+  increase,
+  removeFromCart,
+  removeFromSub,
+} from "../Redux/action";
 
-function Cart({ cartItems }) {
-  const [quantities, setQuantities] = useState(Array(cartItems.length).fill(1));
+function Cart() {
+  const cart = useSelector((state) => state.cart.cartItems);
+  console.log(cart);
   const dispatch = useDispatch();
 
   const handleAdd = (index) => {
-    const newQuantities = [...quantities];
-    newQuantities[index] += 1;
-    setQuantities(newQuantities);
+    dispatch(increase(index));
   };
 
   const handleSub = (index) => {
-    const newQuantities = [...quantities];
-    
-    if (newQuantities[index] > 0) {
-      newQuantities[index] -= 1;
-      setQuantities(newQuantities);
-      if (newQuantities[index] === 0) {
-        // Dispatch the action to remove the item from the cart using the index
-        dispatch(removeFromCart(index));
-      }
-    }
+    dispatch(decrease(index));
   };
 
   const calculateDiscount = (cost, quantity) => {
@@ -49,12 +44,12 @@ function Cart({ cartItems }) {
   const handleDelete = (itemId) => {
     dispatch(removeFromCart(itemId));
   };
-  const totalCost = cartItems.reduce((total, item, index) => {
-    return total + handleCost(item.Cost, quantities[index]);
+  const totalCost = cart.reduce((total, item) => {
+    return total + handleCost(item.id.Cost, item.quantity);
   }, 0);
 
-  const finalCost = cartItems.reduce((total, item, index) => {
-    return total + calculateDiscount(item.Cost, quantities[index]);
+  const finalCost = cart.reduce((total, item, ) => {
+    return total + calculateDiscount(item.id.Cost, item.quantity);
   }, 0);
   return (
     <>
@@ -63,7 +58,7 @@ function Cart({ cartItems }) {
       </Typography>
       <div className="cart">
         <Box className="cart-box">
-          {cartItems.length <= 0 ? (
+          {cart.length <= 0 ? (
             <Box
               style={{
                 display: "flex",
@@ -78,9 +73,9 @@ function Cart({ cartItems }) {
               </Typography>
             </Box>
           ) : (
-            cartItems.map((item, index) => (
-              <div className='basket'key={index}>
-                <Typography variant="h6">{item.title}</Typography>
+            cart.map((item, index) => (
+              <div className="basket" key={index}>
+                <Typography variant="h6">{item.id.title}</Typography>
                 <Box className="onetimecost">
                   <Typography variant="h6" fontSize={"1rem"}>
                     one time cost
@@ -94,16 +89,28 @@ function Cart({ cartItems }) {
                     monthly
                   </Typography>
                   <Typography variant="h6" fontSize={"0.9rem"}>
-                    Rs {calculateDiscount(item.Cost, quantities[index])}
+                    Rs {calculateDiscount(item.id.Cost, item.quantity)}
                   </Typography>
                   <Typography variant="h6" fontSize={"0.8rem"} color={"red"}>
-                    Instead of Rs {handleCost(item.Cost, quantities[index])}
+                    Instead of Rs {handleCost(item.id.Cost, item.quantity)}
                   </Typography>
+                  {/* <Typography variant="h6" fontSize={"0.9rem"}>
+                    Rs {item.id.Cost}
+                  </Typography>
+                  <Typography variant="h6" fontSize={"0.8rem"} color={"red"}>
+                    Instead of Rs{item.id.Cost}
+                  </Typography>  */}
                 </Box>
                 <Box className="btn-list">
-                  <FaPlus color={"green"} onClick={() => handleAdd(index)} />
-                  <Typography>{quantities[index]}</Typography>
-                  <FaMinus color={"red"} onClick={() => handleSub(index)} />
+                  <FaPlus
+                    color={"green"}
+                    onClick={() => handleAdd(item.id._id)}
+                  />
+                  <Typography>{item.quantity}</Typography>
+                  <FaMinus
+                    color={"red"}
+                    onClick={() => handleSub(item.id._id)}
+                  />
                 </Box>
                 <FaTrash color={"red"} onClick={() => handleDelete(item.id)} />
               </div>
@@ -112,22 +119,26 @@ function Cart({ cartItems }) {
         </Box>
       </div>
 
-      <Box className="bill">
-        <Typography variant="h6" color={"blue"}>
-          Discounts
-        </Typography>
-        <Typography variant="h6" color={"blue"}>
-          10%
-        </Typography>
-        <Typography variant="h6" color={"blue"}>
-          Rs {totalCost}
-        </Typography>
-      </Box>
-      <Box className="bill2">
-        <Typography variant="h6">TotalCost</Typography>
-        <Typography variant="h6">10%</Typography>
-        <Typography variant="h6">Rs {finalCost}</Typography>
-      </Box>
+      {cart.length > 0 && (
+        <>
+          <Box className="bill">
+            <Typography variant="h6" color={"blue"}>
+              Discounts
+            </Typography>
+            <Typography variant="h6" color={"blue"}>
+              10%
+            </Typography>
+            <Typography variant="h6" color={"blue"}>
+              Rs {totalCost}
+            </Typography>
+          </Box>
+          <Box className="bill2">
+            <Typography variant="h6">TotalCost</Typography>
+            <Typography variant="h6">10%</Typography>
+            <Typography variant="h6">Rs {finalCost}</Typography>
+          </Box>
+        </>
+      )}
     </>
   );
 }
